@@ -38,7 +38,7 @@
 					</span>
 				</div>
 
-				<form class="login100-form validate-form" action="#" method="post">
+				<form class="login100-form validate-form" id="loginForm" method="post">
 					<div class="wrap-input100 validate-input m-b-26" data-validate="Email is required">
 						<span class="label-input100">Email</span>
 						<input class="input100" type="email" name="email" placeholder="Enter email">
@@ -78,5 +78,44 @@
 <!--===============================================================================================-->
 	<script src="assets/js/main.js"></script>
 
+	<script>
+        $('form#loginForm').submit(function (event) {
+            // Stop the form submitting automatically
+            event.preventDefault();
+
+            console.log('ok');
+
+            // Create a FormData object
+            const formData = new FormData($(this)[0]);
+
+            // Submit form
+            $.ajax({
+                type: "POST",
+                enctype: 'multipart/form-data',
+                url: "/login",
+                data: formData,
+                processData: false,
+                contentType: false,
+                cache: false,
+                success: function(response) {
+                    console.log("response");
+                    console.log(response);
+                    if(response===true)
+                    {
+                        $('#successModal').modal('show');
+                    }
+                    else
+                    {
+                        $('#failedModal').modal('show');
+                    }
+                },
+                error: function (err) {
+                    console.log(err);
+                    $('#failedModal').modal('show');
+                }
+            });
+
+        });
+	</script>
 </body>
 </html>
