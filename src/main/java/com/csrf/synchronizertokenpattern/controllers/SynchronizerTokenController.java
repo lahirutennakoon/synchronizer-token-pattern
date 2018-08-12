@@ -2,10 +2,9 @@ package com.csrf.synchronizertokenpattern.controllers;
 
 import com.csrf.synchronizertokenpattern.services.SynchronizerTokenService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
@@ -23,7 +22,7 @@ public class SynchronizerTokenController
     }
 
     @PostMapping("/login")
-    public boolean loginUser(@RequestParam String email, @RequestParam String password, HttpServletResponse response)
+    public RedirectView loginUser(@RequestParam String email, @RequestParam String password, HttpServletResponse response)
     {
         // Create cookie if login credentials are valid and return true
         if (this.synchronizerTokenService.loginUser(email,password))
@@ -41,12 +40,24 @@ public class SynchronizerTokenController
 
             // Save values to hashmap
             this.synchronizerTokenService.saveToHashMap(email, password, sessionId, csrfToken);
-            return true;
+
+            // Redirect to new page
+            return new RedirectView("/form.html");
+
         }
 
-        // Else return false
-        return false;
+        // Else redirect to same page with error message false
+        return new RedirectView("/?login=invalid");
+
 
 
     }
+
+    /*@GetMapping("/form")
+    public ModelAndView redirectToFormPage()
+    {
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("form");
+        return modelAndView;
+    }*/
 }
