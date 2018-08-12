@@ -39,6 +39,12 @@
 				</div>
 
 				<form class="login100-form validate-form" id="loginForm" method="post" action="/login">
+					<div id="invalidLogin">
+						<div class="alert alert-danger" style="display: none;" id="invalidLoginAlert">
+							Invalid email and/or password!
+						</div>
+					</div>
+
 					<div class="wrap-input100 validate-input m-b-26" data-validate="Email is required">
 						<span class="label-input100">Email</span>
 						<input class="input100" type="email" name="email" placeholder="Enter email">
@@ -78,44 +84,24 @@
 <!--===============================================================================================-->
 	<script src="assets/js/main.js"></script>
 
-	<!--<script>
-        $('form#loginForm').submit(function (event) {
-            // Stop the form submitting automatically
-            event.preventDefault();
+	<script>
+        function getUrlQueryParameterByName(name, url) {
+            if (!url) url = window.location.href;
+            name = name.replace(/[\[\]]/g, '\\$&');
+            const regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+                results = regex.exec(url);
+            if (!results) return null;
+            if (!results[2]) return '';
+            return decodeURIComponent(results[2].replace(/\+/g, ' '));
+        }
 
-            console.log('ok');
+        const loginStatus = getUrlQueryParameterByName('loginStatus');
 
-            // Create a FormData object
-            const formData = new FormData($(this)[0]);
-
-            // Submit form
-            $.ajax({
-                type: "POST",
-                enctype: 'multipart/form-data',
-                url: "/login",
-                data: formData,
-                processData: false,
-                contentType: false,
-                cache: false,
-                success: function(response) {
-                    console.log("response");
-                    console.log(response);
-                    if(response===true)
-                    {
-                        $('#successModal').modal('show');
-                    }
-                    else
-                    {
-                        $('#failedModal').modal('show');
-                    }
-                },
-                error: function (err) {
-                    console.log(err);
-                    $('#failedModal').modal('show');
-                }
-            });
-
-        });
-	</script>-->
+        // Show invalid login alert if user credentials are invalid
+        if(loginStatus === 'invalid')
+        {
+            document.getElementById("invalidLoginAlert").style.display = 'block';
+        }
+	</script>
 </body>
 </html>

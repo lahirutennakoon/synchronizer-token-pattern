@@ -47,17 +47,13 @@ public class SynchronizerTokenController
         }
 
         // Else redirect to same page with error message false
-        return new RedirectView("/?login=invalid");
-
-
+        return new RedirectView("/?loginStatus=invalid");
 
     }
 
-    /*@GetMapping("/form")
-    public ModelAndView redirectToFormPage()
+    @PostMapping("/csrfToken")
+    public String sendCsrfToken()
     {
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("form");
-        return modelAndView;
-    }*/
+        return "a";
+    }
 }
