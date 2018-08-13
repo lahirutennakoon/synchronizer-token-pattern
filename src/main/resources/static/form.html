@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Form</title>
+    <title>CSRF Protection Form</title>
 
     <link rel="stylesheet" type="text/css" href="assets/vendor/bootstrap/css/bootstrap.min.css">
 
@@ -10,7 +10,7 @@
 <body>
     <h2>Check</h2>
     <div class="row">
-        <div class="col-3">a</div>
+        <div class="col-3"></div>
         <div class="col-6">
             <form action="/action_page.php">
                 <div class="form-group">
@@ -29,12 +29,42 @@
                 <button type="submit" class="btn btn-primary">Check CSRF Token Validity</button>
             </form>
         </div>
-        <div class="col-3">a</div>
+        <div class="col-3"></div>
     </div>
 
     <script src="assets/vendor/jquery/jquery-3.2.1.min.js"></script>
     <script>
-        console.log('ok');
+        const cookies = document.cookie;
+        console.log('all cookies:');
+        console.log(cookies);
+
+        const sessionIdCookie = getCookie("sessionId");
+        console.log("sessionId: ");
+        console.log(sessionIdCookie);
+
+        // Get a specific cookie
+        function getCookie(cname) {
+            var name = cname + "=";
+            var decodedCookie = decodeURIComponent(document.cookie);
+            var ca = decodedCookie.split(';');
+            for(var i = 0; i <ca.length; i++) {
+                var c = ca[i];
+                while (c.charAt(0) == ' ') {
+                    c = c.substring(1);
+                }
+                if (c.indexOf(name) == 0) {
+                    return c.substring(name.length, c.length);
+                }
+            }
+            return "";
+        }
+
+        test();
+
+        function test()
+        {
+            console.log('test');
+        }
     </script>
 </body>
 </html>
