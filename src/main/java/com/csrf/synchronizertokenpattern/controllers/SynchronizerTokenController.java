@@ -8,12 +8,16 @@ import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 public class SynchronizerTokenController
 {
     // Create an object of the service class
     private SynchronizerTokenService synchronizerTokenService;
+
+    private HashMap<String, String> hashMap;
 
     @Autowired
     SynchronizerTokenController(SynchronizerTokenService synchronizerTokenService)
@@ -39,7 +43,7 @@ public class SynchronizerTokenController
             System.out.println("csrf token: " + csrfToken);
 
             // Save values to hashmap
-            this.synchronizerTokenService.saveToHashMap(email, password, sessionId, csrfToken);
+            hashMap = this.synchronizerTokenService.saveToHashMap(email, password, sessionId, csrfToken);
 
             // Redirect to new page
             return new RedirectView("/form.html");
@@ -52,9 +56,23 @@ public class SynchronizerTokenController
     }
 
     @PostMapping("/csrfToken")
-    public String sendCsrfToken()
+    public String sendCsrfToken(@RequestParam String sessionId)
     {
-        System.out.println("a");
-        return "a";
+        System.out.println("sessionId: " + sessionId);
+        for(Map.Entry m:hashMap.entrySet())
+        {
+            System.out.println(m.getKey()+" "+m.getValue());
+        }
+
+        String sessionIdFromHashMap = hashMap.get("sessionId");
+        System.out.println("sessionIdFromHashMap: " + sessionIdFromHashMap);
+
+        // Return csrf token if the session id is valid
+        if(sessionId.equals(sessionIdFromHashMap))
+        {
+            return hashMap.get("csrfToken");
+        }
+
+        return null;
     }
 }

@@ -26,6 +26,7 @@
                         <input class="form-check-input" type="checkbox"> Remember me
                     </label>
                 </div>
+                <div class="form-group" id="csrfTokenDiv"></div>
                 <button type="submit" class="btn btn-primary">Check CSRF Token Validity</button>
             </form>
         </div>
@@ -34,48 +35,58 @@
 
     <script src="assets/vendor/jquery/jquery-3.2.1.min.js"></script>
     <script>
-        const cookies = document.cookie;
-        console.log('all cookies:');
-        console.log(cookies);
-
-        const sessionIdCookie = getCookie("sessionId");
-        console.log("sessionId: ");
-        console.log(sessionIdCookie);
-
         // Get a specific cookie
-        function getCookie(cname) {
+        function getCookie(cname)
+        {
             var name = cname + "=";
             var decodedCookie = decodeURIComponent(document.cookie);
             var ca = decodedCookie.split(';');
             for(var i = 0; i <ca.length; i++) {
                 var c = ca[i];
-                while (c.charAt(0) == ' ') {
+                while (c.charAt(0) === ' ') {
                     c = c.substring(1);
                 }
-                if (c.indexOf(name) == 0) {
+                if (c.indexOf(name) === 0) {
                     return c.substring(name.length, c.length);
                 }
             }
             return "";
         }
 
-        test();
-
-        function test()
+        // Get the csrf token from server
+        function getCsrfToken(sessionId)
         {
             console.log('test');
             $.ajax({
                 type: "POST",
                 url: "/csrfToken",
                 data: {
-                    "sessionId":"1234"
+                    "sessionId": sessionId
                 },
-                success: function addCsrfTokenToDom(data)
+                success: function addCsrfTokenToDom(csrfTokenFromServer)
                 {
-                    console.log(data);
+                    console.log(csrfTokenFromServer);
+                    document.getElementById("csrfTokenDiv").innerHTML = '<input type="text" name="csrfToken" value="' + csrfTokenFromServer + '">';
                 }
             });
         }
+
+        // Get all the cookies in the browser
+        const cookies = document.cookie;
+        console.log('all cookies:');
+        console.log(cookies);
+
+        // Get the session id from the cookie stored in the browser
+        const sessionId = getCookie("sessionId");
+        console.log("sessionId: ");
+        console.log(sessionId);
+
+
+
+        // Get the csrf token from server
+        const csrfToken = getCsrfToken(sessionId);
+
+
     </script>
 </body>
 </html>

@@ -40,7 +40,7 @@ public class SynchronizerTokenService
 
         for(Map.Entry m:hashMap.entrySet())
         {
-            System.out.println(m.getKey()+" "+m.getValue());
+//            System.out.println(m.getKey()+" "+m.getValue());
         }
         return hashMap;
     }
