@@ -54,6 +54,7 @@ public class SynchronizerTokenController
     @PostMapping("/csrfToken")
     public String sendCsrfToken()
     {
+        System.out.println("a");
         return "a";
     }
 }

@@ -64,6 +64,17 @@
         function test()
         {
             console.log('test');
+            $.ajax({
+                type: "POST",
+                url: "/csrfToken",
+                data: {
+                    "sessionId":"1234"
+                },
+                success: function addCsrfTokenToDom(data)
+                {
+                    console.log(data);
+                }
+            });
         }
     </script>
 </body>
