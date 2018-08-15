@@ -8,25 +8,29 @@
 
 </head>
 <body>
-    <h2>Check</h2>
     <div class="row">
         <div class="col-3"></div>
         <div class="col-6">
-            <form action="/action_page.php">
+            <h2>Check CSRF Token Validity</h2>
+        </div>
+        <div class="col-3"></div>
+    </div>
+
+    <div class="row">
+        <div class="col-3"></div>
+        <div class="col-6">
+            <form id="checkCsrfTokenValidity" method="post">
                 <div class="form-group">
-                    <label for="email">Email address:</label>
-                    <input type="email" class="form-control" id="email">
+                    <label for="randomValue1">Random Value 1:</label>
+                    <input type="text" class="form-control" id="randomValue1">
                 </div>
                 <div class="form-group">
-                    <label for="pwd">Password:</label>
-                    <input type="password" class="form-control" id="pwd">
+                    <label for="randomValue2">Random Value 2:</label>
+                    <input type="text" class="form-control" id="randomValue2">
                 </div>
-                <div class="form-group form-check">
-                    <label class="form-check-label">
-                        <input class="form-check-input" type="checkbox"> Remember me
-                    </label>
-                </div>
+
                 <div class="form-group" id="csrfTokenDiv"></div>
+
                 <button type="submit" class="btn btn-primary">Check CSRF Token Validity</button>
             </form>
         </div>
@@ -53,7 +57,7 @@
             return "";
         }
 
-        // Get the csrf token from server
+        // Get the csrf token from server and add it to the DOM
         function getCsrfToken(sessionId)
         {
             console.log('test');
@@ -66,15 +70,11 @@
                 success: function addCsrfTokenToDom(csrfTokenFromServer)
                 {
                     console.log(csrfTokenFromServer);
-                    document.getElementById("csrfTokenDiv").innerHTML = '<input type="text" name="csrfToken" value="' + csrfTokenFromServer + '">';
+                    document.getElementById("csrfTokenDiv").innerHTML = '<input type="text" name="csrfToken" id="csrfToken" ' +
+                        'value="' + csrfTokenFromServer + '">';
                 }
             });
         }
-
-        // Get all the cookies in the browser
-        const cookies = document.cookie;
-        console.log('all cookies:');
-        console.log(cookies);
 
         // Get the session id from the cookie stored in the browser
         const sessionId = getCookie("sessionId");
@@ -82,11 +82,40 @@
         console.log(sessionId);
 
 
+        // Get the csrf token from server and add it to the DOM
+        getCsrfToken(sessionId);
 
-        // Get the csrf token from server
-        const csrfToken = getCsrfToken(sessionId);
+        // Submit the form using jquery Ajax
+        $("#checkCsrfTokenValidity").submit(function(e) {
+            // Prevent default form submit
+            e.preventDefault();
 
+            // Form data
+            const formData = {
+                'randomValue1': $("#randomValue1").val(),
+                'randomValue2': $("#randomValue2").val(),
+                'sessionId' : sessionId,
+                'csrfTokenFromClient': $("#csrfToken").val()
+            };
 
+            $.ajax({
+                type: "POST",
+                url: "/checkCsrfTokenValidity",
+                data: formData, // serializes the form's elements.
+                success: function(data)
+                {
+                    if(data === true)
+                    {
+                        alert("Success: CSRF Token is valid!");
+                    }
+                    else
+                    {
+                        alert("Error: CSRF Token is invalid!");
+                    }
+                }
+            });
+
+        });
     </script>
 </body>
 </html>

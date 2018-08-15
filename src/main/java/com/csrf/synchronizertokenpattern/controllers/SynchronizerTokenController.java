@@ -75,4 +75,24 @@ public class SynchronizerTokenController
 
         return null;
     }
+
+    @PostMapping("/checkCsrfTokenValidity")
+    public boolean checkCsrfTokenValidity(@RequestParam String sessionId, @RequestParam String csrfTokenFromClient)
+    {
+        System.out.println("/checkCsrfTokenValidity");
+        System.out.println("sessionid:" + sessionId);
+        System.out.println("csrftoken:" + csrfTokenFromClient);
+
+        String sessionIdFromHashMap = hashMap.get("sessionId");
+        if(sessionId.equals(sessionIdFromHashMap))
+        {
+            String csrfTokenFromHashMap = hashMap.get("csrfToken");
+
+            // Return true if the 2 csrf tokens match
+            return csrfTokenFromClient.equals(csrfTokenFromHashMap);
+        }
+
+        // Return false if the 2 csrf tokens do not match
+        return false;
+    }
 }
