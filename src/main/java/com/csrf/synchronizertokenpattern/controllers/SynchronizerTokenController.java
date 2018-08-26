@@ -3,7 +3,6 @@ package com.csrf.synchronizertokenpattern.controllers;
 import com.csrf.synchronizertokenpattern.services.SynchronizerTokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.Cookie;
@@ -40,7 +39,6 @@ public class SynchronizerTokenController
 
             // Generate csrf token
             String csrfToken = this.synchronizerTokenService.generateUniqueId();
-            System.out.println("csrf token: " + csrfToken);
 
             // Save values to hashmap
             hashMap = this.synchronizerTokenService.saveToHashMap(email, password, sessionId, csrfToken);
@@ -58,14 +56,12 @@ public class SynchronizerTokenController
     @PostMapping("/csrfToken")
     public String sendCsrfToken(@RequestParam String sessionId)
     {
-        System.out.println("sessionId: " + sessionId);
         for(Map.Entry m:hashMap.entrySet())
         {
             System.out.println(m.getKey()+" "+m.getValue());
         }
 
         String sessionIdFromHashMap = hashMap.get("sessionId");
-        System.out.println("sessionIdFromHashMap: " + sessionIdFromHashMap);
 
         // Return csrf token if the session id is valid
         if(sessionId.equals(sessionIdFromHashMap))
@@ -79,11 +75,9 @@ public class SynchronizerTokenController
     @PostMapping("/checkCsrfTokenValidity")
     public boolean checkCsrfTokenValidity(@RequestParam String sessionId, @RequestParam String csrfTokenFromClient)
     {
-        System.out.println("/checkCsrfTokenValidity");
-        System.out.println("sessionid:" + sessionId);
-        System.out.println("csrftoken:" + csrfTokenFromClient);
-
         String sessionIdFromHashMap = hashMap.get("sessionId");
+
+        // Check if the session is valid
         if(sessionId.equals(sessionIdFromHashMap))
         {
             String csrfTokenFromHashMap = hashMap.get("csrfToken");
